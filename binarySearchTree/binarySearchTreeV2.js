@@ -140,7 +140,7 @@ function getRandomInt(min, max) {
 const dataRows = 100000;
 const data = [...Array(dataRows).keys()];
 const dataTree = new BinarySearchTree(data);
-const searchNumber = Math.random(0, dataRows);
+const searchNumber = getRandomInt(0, dataRows);
 
 Tools.getRuntime(data.includes(searchNumber));
 Tools.getRuntime(dataTree.contains(searchNumber));
