@@ -13,10 +13,12 @@ class BinarySearchTree {
             if (this.empty) {
                 this.empty = false;
                 this.rootValue = value;
+                this.tree[value].depth = 0;
             } else {
-                this.search(value, (currentValue, direction, continuing) => {
+                this.search(value, (currentValue, direction, continuing, currentDepth) => {
                     if (!continuing) {
                         this.tree[currentValue][direction] = value;
+                        this.tree[value].depth = currentDepth;
                     }
                 });
             }
@@ -25,7 +27,25 @@ class BinarySearchTree {
     initalise(array) {
         if (array) {
             if (Array.isArray(array) && array.length > 0) {
-                var sorted = [].concat(array).sort((a, b) => a - b);
+                const depths = [];
+                var currentDepth = [];
+                var indices = [[... new Set(array).keys()]];
+
+                while (indices.length > 0) {
+                    indices.map((val, idx, arr) => {
+                        const median = getMedianIndex(val);
+                        currentDepth.push(arr[idx].splice(median, 1)[0]);
+                        arr[idx] = splitArray(arr[idx], median);
+                    });
+                    indices = [].concat(...indices);
+                
+                    depths.push(currentDepth);
+                    currentDepth = [];
+                }
+
+                depths.map((queue) => {
+                    queue.map((idx) => this.add(idx));
+                })
                 
             } else {
                 throw new TypeError('input must be an non-empty array');
@@ -41,22 +61,24 @@ class BinarySearchTree {
     }
     search(searchValue, callbackfn) {
         var currentValue = this.rootValue;
+        var currentDepth = 0;
 
         while (currentValue !== searchValue) {
+            currentDepth++;
             if (searchValue < currentValue) {
                 if (this.tree[currentValue].left) {
-                    callbackfn(currentValue, 'left', true);
+                    if (callbackfn) callbackfn(currentValue, 'left', true, currentDepth);
                     currentValue = this.tree[currentValue].left;
                 } else {
-                    callbackfn(currentValue, 'left', false);
+                    if (callbackfn) callbackfn(currentValue, 'left', false, currentDepth);
                     return false;
                 }
             } else {
                 if (this.tree[currentValue].right) {
-                    callbackfn(currentValue, 'right', true);
+                    if (callbackfn) callbackfn(currentValue, 'right', true, currentDepth);
                     currentValue = this.tree[currentValue].right;
                 } else {
-                    callbackfn(currentValue, 'right', false);
+                    if (callbackfn) callbackfn(currentValue, 'right', false, currentDepth);
                     return false;
                 }
             }
@@ -73,31 +95,12 @@ class Node {
         this.value = value;
         this.left = undefined;
         this.right = undefined;
+        this.depth = undefined;
     }
 }
 
 function getMedianIndex(array) {
     return Math.ceil(array.length/2 - 1);
-}
-
-function getTree(array) {
-    const queues = [];
-    var currentQueue = [];
-    var indices = [[... new Set(array).keys()]];
-
-    while (indices.length > 0) {
-        indices.map((val, idx, arr) => {
-            const median = getMedianIndex(val);
-            currentQueue.push(arr[idx].splice(median, 1)[0]);
-            arr[idx] = splitArray(arr[idx], median);
-        });
-        indices = [].concat(...indices);
-    
-        queues.push(currentQueue);
-        currentQueue = [];
-    }
-
-    console.log(queues);
 }
 
 function splitArray(array, index) {
@@ -108,6 +111,9 @@ function splitArray(array, index) {
     }
 }
 
-const data = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+const data = [...Array(100).keys()];
+const dataTree = new BinarySearchTree(data);
 
-getTree(data);
+Tools.getRuntime(dataTree.search(50));
+Tools.getRuntime(data.includes(50));
+
