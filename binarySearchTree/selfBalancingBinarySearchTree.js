@@ -15,7 +15,7 @@ class BinarySearchTree {
                 this.rootValue = value;
                 this.tree[value].depth = 0;
             } else {
-                this.search(value, (currentValue, direction, continuing, currentDepth) => {
+                this.traverse(value, (currentValue, direction, continuing, currentDepth) => {
                     if (!continuing) {
                         this.tree[currentValue][direction] = value;
                         this.tree[value].depth = currentDepth;
@@ -23,6 +23,26 @@ class BinarySearchTree {
                 });
             }
         }
+    }
+    contains(value) {
+        var currentValue = this.rootValue;
+
+        while (currentValue !== value) {
+            if (value < currentValue) {
+                if (this.tree[currentValue].left) {
+                    currentValue = this.tree[currentValue].left;
+                } else {
+                    return false;
+                }
+            } else {
+                if (this.tree[currentValue].right) {
+                    currentValue = this.tree[currentValue].right;
+                } else {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
     initalise(array) {
         if (array) {
@@ -54,12 +74,12 @@ class BinarySearchTree {
     }
     path(value) {
         const path = [];
-        this.search(value, (currentValue, direction, continuing) => {
+        this.traverse(value, (currentValue, direction, continuing) => {
             path.push({ value: currentValue, direction: direction });
         });
         return path;
     }
-    search(searchValue, callbackfn) {
+    traverse(searchValue, callbackfn) {
         var currentValue = this.rootValue;
         var currentDepth = 0;
 
@@ -111,9 +131,17 @@ function splitArray(array, index) {
     }
 }
 
-const data = [...Array(100).keys()];
-const dataTree = new BinarySearchTree(data);
+function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min) + min);
+}
 
-Tools.getRuntime(dataTree.search(50));
-Tools.getRuntime(data.includes(50));
+const dataRows = 100000;
+const data = [...Array(dataRows).keys()];
+const dataTree = new BinarySearchTree(data);
+const searchNumber = Math.random(0, dataRows);
+
+Tools.getRuntime(data.includes(searchNumber));
+Tools.getRuntime(dataTree.contains(searchNumber));
 

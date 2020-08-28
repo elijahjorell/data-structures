@@ -2,7 +2,7 @@ const performance = require('perf_hooks').performance;
 
 module.exports = {
     getRuntime: function(fn) {
-        const tries = 30;
+        const tries = 1000;
     
         var startTime;
         var finishTime;
