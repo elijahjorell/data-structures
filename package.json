@@ -1,0 +1,22 @@
+{
+  "name": "data-structures-practice",
+  "version": "1.0.0",
+  "description": "",
+  "main": "tools.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/elijahjorell/data-structures-practice.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/elijahjorell/data-structures-practice/issues"
+  },
+  "homepage": "https://github.com/elijahjorell/data-structures-practice#readme",
+  "dependencies": {
+    "async": "^3.2.0"
+  }
+}

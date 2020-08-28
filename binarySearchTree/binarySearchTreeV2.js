@@ -1,4 +1,6 @@
 const Tools = require('../tools');
+const { promises } = require('fs');
+const { resolve } = require('path');
 
 class BinarySearchTree {
     constructor(array) {
@@ -137,11 +139,63 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min) + min);
 }
 
-const dataRows = 100000;
-const data = [...Array(dataRows).keys()];
-const dataTree = new BinarySearchTree(data);
-const searchNumber = getRandomInt(0, dataRows);
+function arraySearchRandomNumber(arr, min, max) {
+    const searchNumber = getRandomInt(min, max);
+    arr.includes(searchNumber);
+}
 
-Tools.getRuntime(data.includes(searchNumber));
-Tools.getRuntime(dataTree.contains(searchNumber));
+function bstSearchRandomNumber(bst, min, max) {
+    const searchNumber = getRandomInt(min, max);
+    bst.contains(searchNumber);
+}
+
+function simulateAlgorithms(iterations, interval) {
+    const dataRows = 100000;
+    const data = [...Array(dataRows).keys()];
+    const bst = new BinarySearchTree(data);
+
+    console.log('------- COMMENCING SIMULATION -------')
+
+    return new Promise(resolve => {
+        const comparisonTable = [];
+        for (var i = 0; i < iterations; i++) {
+            setTimeout(() => {
+                comparisonTable.push({
+                    array: (Tools.getRuntime(arraySearchRandomNumber(data, 0, 100000 - 1), false) * Math.pow(10, 6)),
+                    bst: (Tools.getRuntime(bstSearchRandomNumber(bst, 0, 100000 - 1), false) * Math.pow(10, 6))
+                })
+            }, interval)
+        }
+        setTimeout(() => {
+            resolve(comparisonTable);
+        }, iterations * interval)
+    });
+}
+
+async function compareAlgorithms(iterations, interval) {
+    const comparisonTable = await simulateAlgorithms(iterations, interval);
+    const averages = {
+        array: (comparisonTable.reduce((acc, val) => {
+            acc += val.array;
+            return acc;
+        }, 0) / comparisonTable.length).toFixed(1),
+        bst: (comparisonTable.reduce((acc, val) => {
+            acc += val.bst;
+            return acc;
+        }, 0) / comparisonTable.length).toFixed(1)
+    };
+      
+    console.log('Times shown are in \x1b[36mnanoseconds', '\x1b[0m')
+    comparisonTable.map((val, idx, arr) => {
+        arr[idx].array = arr[idx].array.toFixed(1);
+        arr[idx].bst = arr[idx].bst.toFixed(1);
+        console.log(`Run ${idx + 1}` , val);
+    });
+    console.log('\x1b[36mAvg   \x1b[0m', averages)
+}
+
+compareAlgorithms(1000, 500);
+
+
+
 
