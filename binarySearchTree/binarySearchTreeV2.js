@@ -194,7 +194,7 @@ async function compareAlgorithms(iterations, interval) {
     console.log('\x1b[36mAvg   \x1b[0m', averages)
 }
 
-compareAlgorithms(1000, 500);
+compareAlgorithms(30, 500);
 
 
 
