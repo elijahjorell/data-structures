@@ -38,17 +38,19 @@ class UndirectedGraph {
             // check surrounding nodes for nodes that havent not yet been searched
             searcher.validMoves = Object.keys(this.nodes[searcher.currentNode]).filter((node) => !searcher.searchedNodes[node]);
             
+            // run callbackFn if inputted
+            if (callbackFn) callbackFn(searcher, this);
+
             // backtrack if no valid moves and end search if backtrack to starting node with no more valid moves
             while (searcher.validMoves.length === 0) {
                 if (searcher.currentNode === startingNode) return;
                 searcher.pathStack.pop();
                 searcher.currentNode = searcher.pathStack[searcher.pathStack.length - 1];
                 searcher.validMoves = Object.keys(this.nodes[searcher.currentNode]).filter((node) => !searcher.searchedNodes[node]);
+                
+                if (callbackFn) callbackFn(searcher, this);
             }
             
-            // run callbackFn if present
-            if (callbackFn) callbackFn(searcher, this);
-
             // move to next node
             searcher.currentNode = searcher.validMoves[0];
         }
@@ -75,8 +77,8 @@ myGraph.addEdge(7, 11, 0);
 myGraph.addEdge(11, 10, 0);
 myGraph.addNode(12);
 
-console.log(myGraph);
+// console.log(myGraph);
 
 myGraph.searchDepthFirst(0, (searcher, graph) => {
-    
+    console.log(searcher.currentNode, Object.keys(searcher.searchedNodes).length, graph.nodeCount);
 })
