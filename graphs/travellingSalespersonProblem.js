@@ -6,30 +6,29 @@ PROBLEM:
 
 */
 
-const Tools = require("../tools");
-
-const nodes = {};
-
-// set edges of directed graph 
-function addEdge(nodes, u, v, w) {
+function addDirectedEdge(nodes, u, v, w) {
     if (!nodes[u]) {
         nodes[u] = {};
     }
     nodes[u][v] = w;
 }
 
-addEdge(nodes, 'a', 'b', 4);
-addEdge(nodes, 'a', 'c', 1);
-addEdge(nodes, 'a', 'd', 9);
-addEdge(nodes, 'b', 'a', 3);
-addEdge(nodes, 'b', 'c', 6);
-addEdge(nodes, 'b', 'd', 11);
-addEdge(nodes, 'c', 'a', 4);
-addEdge(nodes, 'c', 'b', 1);
-addEdge(nodes, 'c', 'd', 2);
-addEdge(nodes, 'd', 'a', 6);
-addEdge(nodes, 'd', 'b', 5);
-addEdge(nodes, 'd', 'c', -4);
+const Tools = require('../tools');
+const nodes = {};
+
+// set edges of directed graph 
+Graphs.addDirectedEdge(nodes, 'a', 'b', 4);
+Graphs.addDirectedEdge(nodes, 'a', 'c', 1);
+Graphs.addDirectedEdge(nodes, 'a', 'd', 9);
+Graphs.addDirectedEdge(nodes, 'b', 'a', 3);
+Graphs.addDirectedEdge(nodes, 'b', 'c', 6);
+Graphs.addDirectedEdge(nodes, 'b', 'd', 11);
+Graphs.addDirectedEdge(nodes, 'c', 'a', 4);
+Graphs.addDirectedEdge(nodes, 'c', 'b', 1);
+Graphs.addDirectedEdge(nodes, 'c', 'd', 2);
+Graphs.addDirectedEdge(nodes, 'd', 'a', 6);
+Graphs.addDirectedEdge(nodes, 'd', 'b', 5);
+Graphs.addDirectedEdge(nodes, 'd', 'c', -4);
 
 const uniqueNodes = Object.keys(nodes);
 var paths = Object.keys(nodes);
