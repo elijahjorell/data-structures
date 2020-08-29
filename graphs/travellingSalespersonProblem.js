@@ -6,6 +6,8 @@ PROBLEM:
 
 */
 
+const Tools = require("../tools");
+
 const nodes = {};
 
 // set edges of directed graph 
@@ -33,42 +35,48 @@ const uniqueNodes = Object.keys(nodes);
 var paths = Object.keys(nodes);
 var pathTimes = {};
 
-// get unique paths (return to starting node)
-for (var i = uniqueNodes.length - 1; i > 0; i--) {
-    paths.map((path, pathIdx, pathsArr) => {
-        pathsArr[pathIdx] = uniqueNodes.reduce((newPaths, uniqueNode) => {
-            if (!path.includes(uniqueNode)) {
-                newPaths.push(path + uniqueNode);
-            }
-            return newPaths;
-        }, []);
-    });
-    paths = [].concat(...paths);
-}
-paths.map((path, pathIdx, pathsArr) => {
-    pathsArr[pathIdx] += path[0];
-});
-
-// get times of unique paths
-paths.map((path) => {
-    pathTimes[path] = path.split('').reduce((data, v, vIdx) => {
-        if (!data.u) {
-            data.u = v;
-        } else {
-            data.pathTime += nodes[data.u][v];
-            data.u = v;
-        }
-        return data;
-    }, {pathTime: 0, u: undefined}).pathTime;
-})
-
-// get quickest unique path
-var quickestPath = Object.entries(pathTimes).reduce((quickestPath, [path, time]) => {
-    if (!quickestPath.path || time < quickestPath.time) {
-        quickestPath.path = path;
-        quickestPath.time = time; 
+function getQuickestPath(nodes) {
+    // get unique paths (return to starting node)
+    for (var i = uniqueNodes.length - 1; i > 0; i--) {
+        paths.map((path, pathIdx, pathsArr) => {
+            pathsArr[pathIdx] = uniqueNodes.reduce((newPaths, uniqueNode) => {
+                if (!path.includes(uniqueNode)) {
+                    newPaths.push(path + uniqueNode);
+                }
+                return newPaths;
+            }, []);
+        });
+        paths = [].concat(...paths);
     }
+    paths.map((path, pathIdx, pathsArr) => {
+        pathsArr[pathIdx] += path[0];
+    });
+    
+    // get times of unique paths
+    paths.map((path) => {
+        pathTimes[path] = path.split('').reduce((data, v) => {
+            if (!data.u) {
+                data.u = v;
+            } else {
+                data.pathTime += nodes[data.u][v];
+                data.u = v;
+            }
+            return data;
+        }, {pathTime: 0, u: undefined}).pathTime;
+    })
+    
+    // get quickest unique path
+    var quickestPath = Object.entries(pathTimes).reduce((quickestPath, [path, time]) => {
+        if (!quickestPath.quickestPath || time < quickestPath.time) {
+            quickestPath.quickestPath = path;
+            quickestPath.time = time; 
+        }
+        return quickestPath;
+    }, {quickestPath: undefined, time: undefined});
+    
     return quickestPath;
-}, {path: undefined, time: undefined});
+}
 
-console.log(quickestPath);
+console.log(getQuickestPath(nodes));
+
+Tools.getRuntime(getQuickestPath(nodes), true);
